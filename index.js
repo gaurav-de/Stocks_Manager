@@ -1,4 +1,3 @@
-
 // FUNCTIONS
 function deleteAllCookies() {
   const cookies = document.cookie.split(";");
@@ -71,19 +70,13 @@ try {
   cookiData_array = JSON.parse(getCookie("db"));
 
   cookiData_array.forEach(function (entry) { 
-    addLi("00"+entry.stock_id, entry.stock_name, entry.stock_bs)
+    if(entry.render){
+      addLi("00"+entry.stock_id, entry.stock_name, entry.stock_bs)
+    }
     current_id ++;
   });
 }
 catch (e) { cookiData_array = [] }
-
-
-
-
-
-
-// Window on load tasks
-
 
 
 
@@ -93,7 +86,8 @@ function handelAddBtn() {
     stock_name: inputdata.value,
     stock_bs: bsdata.value,
     stock_id: current_id,
-    checked: false,
+    // checked: false,
+    render: true,
   }
   cookiData_array.push(data);
   setCookie('db', cookiData_array);
@@ -101,34 +95,33 @@ function handelAddBtn() {
   console.log("cookies are set :)");
 }
 
-// code runs on checkbox clicked 
-function checkSelectedCheckbox(){
-  for (let i = 0; i < current_id; i++) {
-    if($('#' + "00" + i).is(":checked")){
-      confirm('Please select');
-    }
-  }
+
+// code runs on menu btn clicked 
+function handelMenuBtn() {
+  deleteAllCookies();
+  cookiData_array = [];
+  window.location.reload();
 }
 
+
+// setting a condition for checkbox to be checked 
 for (let i = 0; i < current_id; i++) {
-  let checkbox = document.getElementById('00' + i);
-  checkbox.addEventListener('change', (event) => {
-    // checkSelectedCheckbox();
-    var checkedBoxes = document.querySelectorAll('input[type=checkbox]:checked');
-    console.log(parseInt(checkedBoxes[0].id));
-    cookiData_array.pop(2)
-    console.log(cookiData_array);
-    console.log(current_id);
-  })
+  try{
+    let checkbox = document.getElementById('00' + i);
+    checkbox.addEventListener('change', (event) => {
+     
+      var checkedBoxes = document.querySelectorAll('input[type=checkbox]:checked');
+      let selectedCbId = parseInt(checkedBoxes[0].id);
+     
+      cookiData_array[selectedCbId].render = false;
+      setCookie('db', cookiData_array);
+      window.location.reload();
+    });
+  }
+  catch(e){}
 }
 
 // var checkedBoxes = document.querySelectorAll('input[type=checkbox]');
 // console.log(checkedBoxes);
 
 
-
-function handelMenuBtn() {
-  deleteAllCookies();
-  cookiData_array = [];
-  window.location.reload();
-}
